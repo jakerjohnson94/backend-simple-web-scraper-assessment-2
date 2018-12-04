@@ -18,11 +18,11 @@ regex = {
 def parse_html_from_src(data):
     data_dict = dict()
     soup = BeautifulSoup(data, 'html.parser')
-    # raw_html = soup.encode('utf8')
+    raw_html = soup.encode('utf8')
 
     # find all regex matches in raw html
     for name, pattern in regex.items():
-        data_dict[name] = re.findall(pattern, soup.contents)
+        data_dict[name] = re.findall(pattern, raw_html)
 
     # get urls from tags with attributes that contain  a url
     hrefs = soup.find_all(href=True)
@@ -31,6 +31,7 @@ def parse_html_from_src(data):
         data_dict['url'].append(tag['href'])
     for tag in srcs:
         data_dict['url'].append(tag['src'])
+
     # format phone numbers
     data_dict['phone'] = ['({}) {}-{}'.format(t[0].strip(), t[1], t[2].strip())
                           for t in data_dict['phone']]
@@ -38,10 +39,10 @@ def parse_html_from_src(data):
 
 
 def print_data(dic):
-    for k, v in dic.items():
-        if v:
+    for category, values in dic.items():
+        if values:
             print '{} List: \n {} \n'.format(
-                k.title(), '\n'.join(format_list(v)))
+                category.title(), '\n'.join(format_list(values)))
 
 
 def format_list(ls):
