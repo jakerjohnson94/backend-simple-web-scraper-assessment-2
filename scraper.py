@@ -18,12 +18,13 @@ regex = {
 def parse_html_from_src(data):
     data_dict = dict()
     soup = BeautifulSoup(data, 'html.parser')
-    raw_html = soup.encode('utf8')
+    # raw_html = soup.encode('utf8')
 
     # find all regex matches in raw html
     for name, pattern in regex.items():
-        data_dict[name] = re.findall(pattern, raw_html)
+        data_dict[name] = re.findall(pattern, soup.contents)
 
+    # get urls from tags with attributes that contain  a url
     hrefs = soup.find_all(href=True)
     srcs = soup.find_all(src=True)
     for tag in hrefs:
